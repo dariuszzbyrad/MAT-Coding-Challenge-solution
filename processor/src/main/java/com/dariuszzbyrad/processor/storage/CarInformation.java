@@ -19,9 +19,9 @@ public class CarInformation {
 
     private double fullDistance = 0;
 
-    private int prevPosition;
+    private int prevRank;
 
-    private int currentPosition;
+    private int currentRank;
 
     public void calculateSpeedAndDistance(GISCalculator gisCalculator) {
         if (prevLocation == Location.EMPTY) {
@@ -33,7 +33,5 @@ public class CarInformation {
 
         instantaneousSpeed = (int) ((diffDistance * 3600) / diffTime); //in km/h
         fullDistance += diffDistance;
-
-        //System.out.println(instantaneousSpeed);
     }
 }

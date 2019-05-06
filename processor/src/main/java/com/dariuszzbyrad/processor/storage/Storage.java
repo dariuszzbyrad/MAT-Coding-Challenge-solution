@@ -6,10 +6,7 @@ import com.dariuszzbyrad.processor.mqtt.event.CarPosition;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Component
@@ -25,21 +22,27 @@ public class Storage {
 
         updateLocation(carPosition);
         updateSpeedAndDistance(carPosition);
-        updateRank();
+        updateRank(carPosition);
     }
 
-    //TODO to refactor
-    private void updateRank() {
-        Map<Integer, Double> sortedCarDistances = cars
-                .entrySet()
-                .stream()
-                .collect(Collectors.toMap(Map.Entry::getKey, e -> e.getValue().getFullDistance()))
-                .entrySet()
-                .stream()
-                .sorted(Map.Entry.comparingByValue(Comparator.reverseOrder()))
-                .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue,
-                        (oldValue, newValue) -> oldValue, LinkedHashMap::new));
+    //TODO to refactor + position -> rank
+    private void updateRank(CarPosition carPosition) {
+        int carId = carPosition.getCarIndex();
+        CarInformation carInformation = cars.get(carId);
+        double currentDistance = carInformation.getFullDistance();
 
+        List<Double> ranks = cars.values().stream()
+                .mapToDouble(c -> c.getFullDistance())
+                .filter(d -> d > 0)
+                .sorted().boxed()
+                .collect(Collectors.toList());
+
+        Collections.reverse(ranks);
+
+        int currentRank = ranks.indexOf(currentDistance) + 1;
+
+        carInformation.setPrevRank(carInformation.getCurrentRank());
+        carInformation.setCurrentRank(currentRank);
     }
 
     private void updateSpeedAndDistance(CarPosition carPosition) {
@@ -63,8 +66,6 @@ public class Storage {
 
         carInformation.setPrevPositionTimestamp(carInformation.getCurrentPositionTimestamp());
         carInformation.setCurrentPositionTimestamp(carPosition.getTimestamp());
-
-        carInformation.setPrevPosition(carInformation.getCurrentPosition());
     }
 
     public CarInformation getCarInformation(int carId) {

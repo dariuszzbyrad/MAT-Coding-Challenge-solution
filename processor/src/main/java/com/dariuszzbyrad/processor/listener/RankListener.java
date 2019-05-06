@@ -1,10 +1,9 @@
 package com.dariuszzbyrad.processor.listener;
 
-import com.dariuszzbyrad.processor.mqtt.event.CarPosition;
-import com.dariuszzbyrad.processor.mqtt.publisher.Publisher;
-import com.dariuszzbyrad.processor.mqtt.publisher.PublisherService;
-import com.dariuszzbyrad.processor.mqtt.publisher.SpeedPublisher;
 import com.dariuszzbyrad.processor.mqtt.MqttService;
+import com.dariuszzbyrad.processor.mqtt.event.CarPosition;
+import com.dariuszzbyrad.processor.mqtt.publisher.PublisherService;
+import com.dariuszzbyrad.processor.mqtt.publisher.RankPublisher;
 import com.dariuszzbyrad.processor.storage.CarInformation;
 import com.dariuszzbyrad.processor.storage.Storage;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -12,7 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
-public class SpeedListener implements Listener{
+public class RankListener implements Listener{
     @Autowired
     private Storage basicStorage;
 
@@ -29,12 +28,12 @@ public class SpeedListener implements Listener{
     public void notify(CarPosition carPosition) {
         int carId = carPosition.getCarIndex();
         CarInformation carInformation = basicStorage.getCarInformation(carId);
-        int speed = carInformation.getInstantaneousSpeed();
+        int rank = carInformation.getCurrentRank();
 
-        if (speed != 0) {
-            Publisher speedPublisher = new SpeedPublisher(mqttService.getClient(), mapper, carId, speed);
+        if (rank != 0) {
+            RankPublisher rankPublisher = new RankPublisher(mqttService.getClient(), mapper, carId, rank);
 
-            publisher.publish(speedPublisher);
+            publisher.publish(rankPublisher);
         }
     }
 }

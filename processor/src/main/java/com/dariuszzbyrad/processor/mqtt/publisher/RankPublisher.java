@@ -9,22 +9,23 @@ import org.eclipse.paho.client.mqttv3.MqttMessage;
 import java.util.Date;
 import java.util.concurrent.Callable;
 
-public class SpeedPublisher extends Publisher {
-    private static final String EVENT_NAME = "SPEED";
+public class RankPublisher extends Publisher {
+    private static final String EVENT_NAME = "POSITION";
 
-    private int speed;
+    private int rank;
 
-    public SpeedPublisher(IMqttClient client, ObjectMapper mapper, int carId, int speed) {
+    public RankPublisher(IMqttClient client, ObjectMapper mapper, int carId, int rank) {
         super(client, mapper, carId);
-        this.speed = speed;
+        this.rank = rank;
     }
 
-     protected MqttMessage prepareEvent() throws JsonProcessingException {
+    @Override
+    protected MqttMessage prepareEvent() throws JsonProcessingException {
         CarStatus event = CarStatus.builder()
                 .carIndex(carId)
                 .timestamp(new Date().getTime())
                 .type(EVENT_NAME)
-                .value(speed)
+                .value(rank)
                 .build();
 
         String payload = mapper.writeValueAsString(event);
