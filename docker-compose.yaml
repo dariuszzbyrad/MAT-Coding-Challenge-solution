@@ -41,3 +41,12 @@ services:
                         - mqtt_to_websocket
                 ports:
                         - "127.0.0.1:8084:8084/tcp"
+
+        # Processor
+        processor:
+                container_name: processor
+                image: mat-processor
+                links:
+                        - broker
+                ports:
+                - "127.0.0.1:8082:8080/tcp"
