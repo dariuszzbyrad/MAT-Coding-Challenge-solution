@@ -126,3 +126,9 @@ $ mosquitto_pub -t carStatus -f examples/status.json
 ```
 
 You should now see a car's position and an event in the webapp.
+
+## Run solution
+```console
+$ cd processor && ./mvnw verify jib:dockerBuild
+$ docker-compose up -d
+```
