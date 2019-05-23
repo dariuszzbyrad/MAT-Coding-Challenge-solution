@@ -16,7 +16,7 @@ import java.util.UUID;
 public class MqttService {
 
     @Value("${mqtt.url}")
-    private String mqttUrl = "tcp://localhost:1883";
+    private String mqttUrl = "tcp://broker:1883";
 
     private IMqttClient client;
 

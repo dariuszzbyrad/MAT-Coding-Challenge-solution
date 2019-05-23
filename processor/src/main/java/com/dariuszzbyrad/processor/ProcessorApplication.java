@@ -18,7 +18,6 @@ public class ProcessorApplication {
     public static void main(String[] args) {
         context  = SpringApplication.run(ProcessorApplication.class, args);
 
-        //TODO extract to method
         Listeners listeners = context.getBean(Listeners.class);
         BasicStorageListener basicStorageListener = context.getBean(BasicStorageListener.class);
         SpeedListener speedListener = context.getBean(SpeedListener.class);
@@ -30,7 +29,6 @@ public class ProcessorApplication {
 
         Job mainJob = context.getBean(GPSCoorginatesProcessorJob.class);
         mainJob.run();
-
     }
 
 }
